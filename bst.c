@@ -4,8 +4,8 @@
  * functions for this assignment.  Make sure to add your name and
  * @oregonstate.edu email address below:
  *
- * Name:
- * Email:
+ * Name: Anthony Pham
+ * Email:phamanth@oregonstate.edu
  */
 
 #include <stdio.h>
@@ -313,7 +313,11 @@ int bst_contains(int val, struct bst* bst) {
  * This is the structure you will use to create an in-order BST iterator.  It
  * is up to you how to define this structure.
  */
-struct bst_iterator;
+struct bst_iterator {
+  int* arr;
+  int size;
+  int index;
+};
 
 
 /*
@@ -327,7 +331,7 @@ struct bst_iterator;
  *   Should return the total number of elements stored in bst.
  */
 int bst_size(struct bst* bst) {
-  return 0;
+  return _bst_size(bst->root);
 }
 
 
@@ -344,7 +348,7 @@ int bst_size(struct bst* bst) {
  *   Should return the height of bst.
  */
 int bst_height(struct bst* bst) {
-  return 0;
+  return _bst_height(bst->root);
 }
 
 
@@ -361,7 +365,7 @@ int bst_height(struct bst* bst) {
  *   the values of the nodes add up to sum.  Should return 0 otherwise.
  */
 int bst_path_sum(int sum, struct bst* bst) {
-  return 0;
+  return _bst_path_sum(bst->root, sum);
 }
 
 
@@ -378,7 +382,14 @@ int bst_path_sum(int sum, struct bst* bst) {
  *   value in bst (i.e. the leftmost value in the tree).
  */
 struct bst_iterator* bst_iterator_create(struct bst* bst) {
-  return NULL;
+  struct bst_iterator* iter = malloc(sizeof(struct bst_iterator));
+  int size = bst_size(bst);
+  iter->size = size;
+  iter->index = 0;
+  iter->arr = malloc(size * sizeof(int));
+  int idx = 0;
+  _inorder_fill(bst->root, iter->arr, &idx);
+  return iter;
 }
 
 /*
@@ -388,7 +399,8 @@ struct bst_iterator* bst_iterator_create(struct bst* bst) {
  *   iter - the iterator whose memory is to be freed.  May not be NULL.
  */
 void bst_iterator_free(struct bst_iterator* iter) {
-
+  free(iter->arr);
+  free(iter);
 }
 
 
@@ -401,7 +413,7 @@ void bst_iterator_free(struct bst_iterator* iter) {
  *   iter - the iterator to be checked for more values.  May not be NULL.
  */
 int bst_iterator_has_next(struct bst_iterator* iter) {
-  return 0;
+  return (iter->index < iter->size);
 }
 
 
@@ -414,5 +426,9 @@ int bst_iterator_has_next(struct bst_iterator* iter) {
  *     and must have at least one more value to be returned.
  */
 int bst_iterator_next(struct bst_iterator* iter) {
-  return 0;
+  if (!bst_iterator_has_next(iter)) {
+    fprintf(stderr, "Error: No more elements\n");
+    exit(1);
+  }
+  return iter->arr[iter->index++];
 }
