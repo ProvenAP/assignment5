@@ -301,6 +301,36 @@ int bst_contains(int val, struct bst* bst) {
   return 0;
 }
 
+static int _bst_size(struct bst_node* n) {
+  if (n == NULL)
+    return 0;
+  return 1 + _bst_size(n->left) + _bst_size(n->right);
+}
+
+static int _bst_height(struct bst_node* n) {
+  if (n == NULL)
+    return -1;
+  int lh = _bst_height(n->left);
+  int rh = _bst_height(n->right);
+  return 1 + (lh > rh ? lh : rh);
+}
+
+static int _bst_path_sum(struct bst_node* n, int sum) {
+  if (n == NULL)
+    return 0;
+  if (n->left == NULL && n->right == NULL)
+    return (n->val == sum);
+  return _bst_path_sum(n->left, sum - n->val) || _bst_path_sum(n->right, sum - n->val);
+}
+
+static void _inorder_fill(struct bst_node* n, int* arr, int* index) {
+  if (n == NULL)
+    return;
+  _inorder_fill(n->left, arr, index);
+  arr[*index] = n->val;
+  (*index)++;
+  _inorder_fill(n->right, arr, index);
+}
 
 /*****************************************************************************
  *
